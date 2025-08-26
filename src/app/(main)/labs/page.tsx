@@ -1,19 +1,21 @@
 import { PageHeader } from "@/components/page-header";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { labs, parts } from "@/lib/data";
-import { Wrench, Clock, FlaskConical } from "lucide-react";
+import { Wrench, Clock, FlaskConical, Package, CheckCircle2 } from "lucide-react";
 
 export default function LabsPage() {
   const labStats = labs.map((lab) => {
     const labParts = parts.filter((part) => part.labId === lab.id);
-    const totalRepaired = labParts.filter(p => p.status === 'Repaired' || p.status === 'Under Testing').length;
+    const totalParts = labParts.length;
+    const repairedParts = labParts.filter(p => p.status === 'Repaired').length;
     const currentWorkload = labParts.filter(p => p.status === 'Under Testing').length;
     const totalRepairTime = labParts.reduce((sum, part) => sum + part.repairTime, 0);
-    const averageRepairTime = totalRepaired > 0 ? (totalRepairTime / totalRepaired).toFixed(1) : 0;
+    const averageRepairTime = repairedParts > 0 ? (totalRepairTime / repairedParts).toFixed(1) : 0;
 
     return {
       ...lab,
-      totalRepaired,
+      totalParts,
+      repairedParts,
       currentWorkload,
       averageRepairTime,
     };
@@ -24,41 +26,34 @@ export default function LabsPage() {
       <PageHeader title="Lab Management" description="Overview of all repair and testing facilities." />
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {labStats.map((lab) => (
-          <Card key={lab.id}>
+          <Card key={lab.id} className="flex flex-col">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>{lab.name}</CardTitle>
-                <FlaskConical className="h-6 w-6 text-muted-foreground" />
+                <CardTitle className="text-xl">{lab.name}</CardTitle>
+                <FlaskConical className="h-6 w-6 text-primary" />
               </div>
             </CardHeader>
-            <CardContent className="grid gap-4">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                   <Wrench className="h-6 w-6 text-primary" />
+            <CardContent className="grid grid-cols-2 gap-4 flex-grow">
+                <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-muted">
+                   <Package className="h-8 w-8 text-muted-foreground mb-2" />
+                   <p className="text-2xl font-bold">{lab.totalParts}</p>
+                   <p className="text-sm text-center text-muted-foreground">Total Parts</p>
                 </div>
-                <div>
-                    <p className="text-2xl font-bold">{lab.totalRepaired}</p>
-                    <p className="text-sm text-muted-foreground">Parts Repaired</p>
+                <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-muted">
+                   <CheckCircle2 className="h-8 w-8 text-accent mb-2" />
+                   <p className="text-2xl font-bold">{lab.repairedParts}</p>
+                   <p className="text-sm text-center text-muted-foreground">Repaired</p>
                 </div>
-              </div>
-               <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary/10">
-                   <Clock className="h-6 w-6 text-secondary" />
+                 <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-muted">
+                   <Wrench className="h-8 w-8 text-secondary mb-2" />
+                   <p className="text-2xl font-bold">{lab.currentWorkload}</p>
+                   <p className="text-sm text-center text-muted-foreground">In Testing</p>
                 </div>
-                <div>
-                    <p className="text-2xl font-bold">{lab.averageRepairTime} <span className="text-sm font-normal text-muted-foreground">hrs</span></p>
-                    <p className="text-sm text-muted-foreground">Avg. Repair Time</p>
+                 <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-muted">
+                   <Clock className="h-8 w-8 text-blue-500 mb-2" />
+                   <p className="text-2xl font-bold">{lab.averageRepairTime}<span className="text-base font-normal text-muted-foreground">h</span></p>
+                   <p className="text-sm text-center text-muted-foreground">Avg. Time</p>
                 </div>
-              </div>
-               <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-                   <FlaskConical className="h-6 w-6 text-muted-foreground" />
-                </div>
-                <div>
-                    <p className="text-2xl font-bold">{lab.currentWorkload}</p>
-                    <p className="text-sm text-muted-foreground">Current Workload</p>
-                </div>
-              </div>
             </CardContent>
           </Card>
         ))}
