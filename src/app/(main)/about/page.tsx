@@ -36,11 +36,11 @@ export default function AboutPage() {
             <Card className="overflow-hidden">
                 <div className="relative h-96 w-full">
                     <Image
-                        src="https://picsum.photos/seed/infantry/600/800"
-                        alt="Army Infantry"
+                        src="https://picsum.photos/seed/tank/600/800"
+                        alt="Army Tank"
                         fill
                         className="object-cover"
-                        data-ai-hint="army infantry"
+                        data-ai-hint="army tank"
                     />
                 </div>
                 <CardHeader>
