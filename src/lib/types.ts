@@ -1,4 +1,4 @@
-export type PartStatus = "Functional" | "Under Testing" | "Defective";
+export type PartStatus = "Repaired" | "Under Testing" | "Defective";
 
 export type Part = {
   id: string;

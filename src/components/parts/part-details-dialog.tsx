@@ -21,8 +21,8 @@ interface PartDetailsDialogProps {
 
 const getStatusBadge = (status: PartStatus) => {
     switch (status) {
-      case "Functional":
-        return <Badge className="bg-accent hover:bg-accent/80 text-accent-foreground">Functional</Badge>;
+      case "Repaired":
+        return <Badge className="bg-accent hover:bg-accent/80 text-accent-foreground">Repaired</Badge>;
       case "Under Testing":
         return <Badge variant="secondary">Under Testing</Badge>;
       case "Defective":

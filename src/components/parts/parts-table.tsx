@@ -59,8 +59,8 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
   
   const getStatusBadge = (status: PartStatus) => {
     switch (status) {
-      case "Functional":
-        return <Badge className="bg-accent hover:bg-accent/80 text-accent-foreground">Functional</Badge>;
+      case "Repaired":
+        return <Badge className="bg-accent hover:bg-accent/80 text-accent-foreground">Repaired</Badge>;
       case "Under Testing":
         return <Badge variant="secondary">Under Testing</Badge>;
       case "Defective":
@@ -215,8 +215,8 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
                                 Change Status
                            </DropdownMenuSubTrigger>
                            <DropdownMenuSubContent>
-                               <DropdownMenuItem onClick={() => handleStatusChange(part.id, 'Functional')}>
-                                   <CheckCircle className="mr-2 h-4 w-4 text-accent"/> Functional
+                               <DropdownMenuItem onClick={() => handleStatusChange(part.id, 'Repaired')}>
+                                   <CheckCircle className="mr-2 h-4 w-4 text-accent"/> Repaired
                                </DropdownMenuItem>
                                <DropdownMenuItem onClick={() => handleStatusChange(part.id, 'Under Testing')}>
                                    <Clock className="mr-2 h-4 w-4 text-secondary"/> Under Testing

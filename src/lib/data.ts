@@ -1,7 +1,7 @@
 import type { Part, Lab } from "./types";
 
-function getRandomStatus(): "Functional" | "Under Testing" | "Defective" {
-  const statuses: ("Functional" | "Under Testing" | "Defective")[] = ["Functional", "Under Testing", "Defective"];
+function getRandomStatus(): "Repaired" | "Under Testing" | "Defective" {
+  const statuses: ("Repaired" | "Under Testing" | "Defective")[] = ["Repaired", "Under Testing", "Defective"];
   return statuses[Math.floor(Math.random() * statuses.length)];
 }
 

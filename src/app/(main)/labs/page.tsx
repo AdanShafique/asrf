@@ -6,7 +6,7 @@ import { Wrench, Clock, FlaskConical } from "lucide-react";
 export default function LabsPage() {
   const labStats = labs.map((lab) => {
     const labParts = parts.filter((part) => part.labId === lab.id);
-    const totalRepaired = labParts.filter(p => p.status === 'Functional' || p.status === 'Under Testing').length;
+    const totalRepaired = labParts.filter(p => p.status === 'Repaired' || p.status === 'Under Testing').length;
     const currentWorkload = labParts.filter(p => p.status === 'Under Testing').length;
     const totalRepairTime = labParts.reduce((sum, part) => sum + part.repairTime, 0);
     const averageRepairTime = totalRepaired > 0 ? (totalRepairTime / totalRepaired).toFixed(1) : 0;

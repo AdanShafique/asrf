@@ -12,7 +12,7 @@ import { parts, labs } from "@/lib/data";
 import { Pie, PieChart, Bar, BarChart, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 
 const chartConfig = {
-  functional: { label: "Functional", color: "hsl(var(--chart-1))" },
+  repaired: { label: "Repaired", color: "hsl(var(--chart-1))" },
   defective: { label: "Defective", color: "hsl(var(--chart-2))" },
   testing: { label: "Under Testing", color: "hsl(var(--chart-3))" },
   repairTime: { label: "Repair Time (h)", color: "hsl(var(--chart-4))" },
@@ -21,14 +21,14 @@ const chartConfig = {
 export function ReportCharts() {
   // Data for Part Status Pie Chart
   const statusCounts = parts.reduce((acc, part) => {
-    if (part.status === "Functional") acc.functional++;
+    if (part.status === "Repaired") acc.repaired++;
     else if (part.status === "Defective") acc.defective++;
     else if (part.status === "Under Testing") acc.testing++;
     return acc;
-  }, { functional: 0, defective: 0, testing: 0 });
+  }, { repaired: 0, defective: 0, testing: 0 });
 
   const pieData = [
-    { name: "Functional", value: statusCounts.functional, fill: "var(--color-functional)" },
+    { name: "Repaired", value: statusCounts.repaired, fill: "var(--color-repaired)" },
     { name: "Defective", value: statusCounts.defective, fill: "var(--color-defective)" },
     { name: "Under Testing", value: statusCounts.testing, fill: "var(--color-testing)" },
   ];
