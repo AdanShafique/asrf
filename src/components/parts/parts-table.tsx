@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -197,7 +198,7 @@ export function PartsTable({ parts, labs, setParts }: PartsTableProps) {
                   <TableCell>{part.name}</TableCell>
                   <TableCell>{getLabName(part.labId)}</TableCell>
                   <TableCell>{getStatusBadge(part.status)}</TableCell>
-                  <TableCell>{part.repairedAt.toLocaleDateString()}</TableCell>
+                  <TableCell>{part.repairedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
