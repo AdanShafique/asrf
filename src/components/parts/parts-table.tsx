@@ -30,7 +30,6 @@ import { DeletePartDialog } from "./delete-part-dialog";
 import { PartDetailsDialog } from "./part-details-dialog";
 import { EditPartDialog } from "./edit-part-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
 
 type PartsTableProps = {
   parts: Part[];
@@ -41,7 +40,7 @@ type PartsTableProps = {
 
 const ITEMS_PER_PAGE = 19;
 
-export function PartsTable({ parts: initialParts, labs, setParts }: PartsTableProps) {
+export function PartsTable({ parts, labs, setParts }: PartsTableProps) {
   const [filter, setFilter] = React.useState("");
   const [sortConfig, setSortConfig] = React.useState<{ key: keyof Part; direction: string } | null>(null);
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -55,8 +54,6 @@ export function PartsTable({ parts: initialParts, labs, setParts }: PartsTablePr
 
   const { toast } = useToast();
   
-  const parts = initialParts;
-
   const getLabName = (labId: string) => {
     return labs.find((lab) => lab.id === labId)?.name || "Unknown Lab";
   };
@@ -118,11 +115,11 @@ export function PartsTable({ parts: initialParts, labs, setParts }: PartsTablePr
   );
   
   const handleStatusChange = (partId: string, newStatus: PartStatus) => {
-    setParts(parts.map(p => p.id === partId ? { ...p, status: newStatus, repairedAt: new Date() } : p));
+    setParts(currentParts => currentParts.map(p => p.id === partId ? { ...p, status: newStatus, repairedAt: new Date() } : p));
   };
 
   const handleDelete = (partId: string) => {
-    setParts(parts.filter(p => p.id !== partId));
+    setParts(currentParts => currentParts.filter(p => p.id !== partId));
     setIsDeleteAlertOpen(false);
     setPartToDelete(null);
   };
@@ -143,7 +140,7 @@ export function PartsTable({ parts: initialParts, labs, setParts }: PartsTablePr
   };
 
   const handleEdit = (updatedPart: Part) => {
-    setParts(parts.map(p => p.id === updatedPart.id ? updatedPart : p));
+    setParts(currentParts => currentParts.map(p => p.id === updatedPart.id ? updatedPart : p));
     setIsEditDialogOpen(false);
     setPartToEdit(null);
     toast({

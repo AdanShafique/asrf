@@ -6,10 +6,12 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { PartsTable } from "@/components/parts/parts-table";
-import { parts as initialParts, labs } from "@/lib/data";
+import { initialParts, labs } from "@/lib/data";
 import { AddPartDialog } from "@/components/parts/add-part-dialog";
 import type { Part } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
+import { useLocalStorageState } from "@/hooks/use-local-storage-state";
+
 
 const getLabPrefix = (labId: string) => {
     switch (labId) {
@@ -24,7 +26,7 @@ const getLabPrefix = (labId: string) => {
 
 export default function PartsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false);
-  const [parts, setParts] = React.useState<Part[]>(initialParts);
+  const [parts, setParts] = useLocalStorageState<Part[]>("all-parts", initialParts);
   const { toast } = useToast();
 
   const handleAddPart = (newPartData: Omit<Part, 'id' | 'status' | 'repairedAt' | 'repairTime' | 'testingTime'>) => {

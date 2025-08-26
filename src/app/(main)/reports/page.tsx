@@ -6,9 +6,12 @@ import { PageHeader } from "@/components/page-header";
 import { ReportCharts } from "@/components/reports/report-charts";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
-import { parts, labs } from "@/lib/data";
+import { initialParts, labs } from "@/lib/data";
+import { useLocalStorageState } from "@/hooks/use-local-storage-state";
+import { Part } from "@/lib/types";
 
 export default function ReportsPage() {
+  const [parts] = useLocalStorageState<Part[]>("all-parts", initialParts);
 
   const handleExport = () => {
     const getLabName = (labId: string) => {
@@ -50,7 +53,7 @@ export default function ReportsPage() {
             Export Reports
         </Button>
       </PageHeader>
-      <ReportCharts />
+      <ReportCharts parts={parts} />
     </>
   );
 }

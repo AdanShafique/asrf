@@ -1,16 +1,5 @@
 import type { Part, Lab } from "./types";
 
-function getRandomStatus(): "Repaired" | "Under Testing" | "Defective" {
-  const statuses: ("Repaired" | "Under Testing" | "Defective")[] = ["Repaired", "Under Testing", "Defective"];
-  return statuses[Math.floor(Math.random() * statuses.length)];
-}
-
-function getRandomDate(): Date {
-    const start = new Date(2023, 0, 1);
-    const end = new Date();
-    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-}
-
 export const labs: Lab[] = [
   { id: "turret-elec", name: "Turret Elec" },
   { id: "hull-lab-1", name: "Hull Lab-I" },
@@ -99,10 +88,14 @@ const allPartsData = [
   ...elecHarnessLabParts.map((p, i) => ({ ...p, id: `EHL-${(i + 1).toString().padStart(3, '0')}`, labId: 'elec-harness-lab' })),
 ];
 
-export const parts: Part[] = allPartsData.map((part) => ({
-  ...part,
-  status: getRandomStatus(),
-  repairTime: Math.floor(Math.random() * 100) + 1,
-  testingTime: Math.floor(Math.random() * 24) + 1,
-  repairedAt: getRandomDate(),
-}));
+export const initialParts: Part[] = allPartsData.map((part, index) => {
+    const statuses: Part['status'][] = ["Under Testing", "Repaired", "Defective"];
+    const status = statuses[index % statuses.length];
+    return {
+        ...part,
+        status: status,
+        repairTime: Math.floor((index * 3.7) % 100) + 1, // pseudo-random but deterministic
+        testingTime: Math.floor((index * 1.3) % 24) + 1, // pseudo-random but deterministic
+        repairedAt: new Date(2023, 10, (index % 28) + 1), // Different dates in Nov 2023
+    };
+});

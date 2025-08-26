@@ -1,11 +1,20 @@
+
+"use client";
+
+import * as React from "react";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { labs, parts } from "@/lib/data";
+import { labs, initialParts } from "@/lib/data";
 import { Wrench, Clock, FlaskConical, Package, CheckCircle2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import { Part } from "@/lib/types";
+import { useLocalStorageState } from "@/hooks/use-local-storage-state";
+
 
 export default function LabsPage() {
+  const [parts] = useLocalStorageState<Part[]>("all-parts", initialParts);
+
   const labStats = labs.map((lab) => {
     const labParts = parts.filter((part) => part.labId === lab.id);
     const totalParts = labParts.length;

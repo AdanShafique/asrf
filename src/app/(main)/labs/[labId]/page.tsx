@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -6,11 +7,12 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, ArrowLeft } from "lucide-react";
 import { PartsTable } from "@/components/parts/parts-table";
-import { parts as initialParts, labs } from "@/lib/data";
+import { initialParts, labs } from "@/lib/data";
 import { AddPartDialog } from "@/components/parts/add-part-dialog";
 import type { Part } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
+import { useLocalStorageState } from "@/hooks/use-local-storage-state";
 
 const getLabPrefix = (labId: string) => {
     switch (labId) {
@@ -26,16 +28,16 @@ const getLabPrefix = (labId: string) => {
 export default function LabPartsPage() {
   const params = useParams();
   const labId = params.labId as string;
+  const [allParts, setAllParts] = useLocalStorageState<Part[]>("all-parts", initialParts);
 
   const lab = labs.find(l => l.id === labId);
   
   const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false);
-  const [parts, setParts] = React.useState<Part[]>(() => initialParts.filter(p => p.labId === labId));
   const { toast } = useToast();
 
-  React.useEffect(() => {
-    setParts(initialParts.filter(p => p.labId === labId));
-  }, [labId]);
+  const labParts = React.useMemo(() => {
+    return allParts.filter(p => p.labId === labId);
+  }, [allParts, labId]);
 
   if (!lab) {
     notFound();
@@ -43,7 +45,7 @@ export default function LabPartsPage() {
   
   const handleAddPart = (newPartData: Omit<Part, 'id' | 'status' | 'repairedAt' | 'repairTime' | 'testingTime'>) => {
     const labPrefix = getLabPrefix(newPartData.labId);
-    const partsInLab = initialParts.filter(p => p.labId === newPartData.labId);
+    const partsInLab = allParts.filter(p => p.labId === newPartData.labId);
     const newPartNumber = (partsInLab.length + 1).toString().padStart(3, '0');
     
     const newPart: Part = {
@@ -55,9 +57,7 @@ export default function LabPartsPage() {
         repairedAt: new Date(),
     };
     
-    // This is a mock update. In a real app, you'd send this to a server.
-    const allParts = [newPart, ...initialParts]; 
-    setParts(allParts.filter(p => p.labId === labId));
+    setAllParts(prev => [newPart, ...prev]);
     
     setIsAddDialogOpen(false);
     toast({
@@ -82,7 +82,7 @@ export default function LabPartsPage() {
             </Button>
         </div>
       </PageHeader>
-      <PartsTable parts={parts} labs={[lab]} onAddPart={handleAddPart} />
+      <PartsTable parts={labParts} labs={[lab]} onAddPart={handleAddPart} setParts={setAllParts} />
       <AddPartDialog
         isOpen={isAddDialogOpen}
         setIsOpen={setIsAddDialogOpen}

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +9,8 @@ import {
   ChartLegend,
   ChartLegendContent,
 } from "@/components/ui/chart";
-import { parts, labs } from "@/lib/data";
+import { labs } from "@/lib/data";
+import { Part } from "@/lib/types";
 import { Pie, PieChart, Bar, BarChart, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 
 const chartConfig = {
@@ -18,7 +20,11 @@ const chartConfig = {
   repairTime: { label: "Repair Time (h)", color: "hsl(var(--chart-4))" },
 };
 
-export function ReportCharts() {
+interface ReportChartsProps {
+    parts: Part[];
+}
+
+export function ReportCharts({ parts }: ReportChartsProps) {
   // Data for Part Status Pie Chart
   const statusCounts = parts.reduce((acc, part) => {
     if (part.status === "Repaired") acc.repaired++;

@@ -1,18 +1,21 @@
+
 "use client";
 
 import * as React from "react";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { PageHeader } from "@/components/page-header";
-import { parts, labs } from "@/lib/data";
+import { initialParts, labs } from "@/lib/data";
 import { Package, Wrench, CircleAlert, CheckCircle2, Search } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import type { PartStatus } from "@/lib/types";
+import type { Part, PartStatus } from "@/lib/types";
 import { Input } from "@/components/ui/input";
+import { useLocalStorageState } from "@/hooks/use-local-storage-state";
 
 export default function DashboardPage() {
   const [filter, setFilter] = React.useState("");
+  const [parts] = useLocalStorageState<Part[]>("all-parts", initialParts);
 
   const totalParts = parts.length;
   const repairedParts = parts.filter(p => p.status === "Repaired").length;
@@ -45,7 +48,7 @@ export default function DashboardPage() {
     return filtered
       .sort((a, b) => b.repairedAt.getTime() - a.repairedAt.getTime())
       .slice(0, 5);
-  }, [filter]);
+  }, [filter, parts]);
 
   return (
     <>
