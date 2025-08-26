@@ -79,7 +79,7 @@ export default function PartsPage() {
 
   return (
     <>
-      <PageHeader title="Parts Management" description="View, add, and manage all TU-85 parts.">
+      <PageHeader title="Parts Management" description="View, add, and manage all T-85 parts.">
         <div className="flex gap-2">
             <Button variant="outline" onClick={handleSimulateStatusChanges}>
                 <Zap className="mr-2 h-4 w-4" />

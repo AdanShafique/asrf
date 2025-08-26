@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
   title: 'ASRF Tracker',
-  description: 'Application for monitoring the repair and testing of tank TU-85 parts.',
+  description: 'Application for monitoring the repair and testing of tank T-85 parts.',
 };
 
 export default function RootLayout({

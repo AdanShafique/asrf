@@ -14,7 +14,7 @@ export default function AboutPage() {
                 </CardHeader>
                 <CardContent className="text-muted-foreground space-y-4">
                     <p>
-                        The Armored Systems Repair Facility (ASRF) is dedicated to ensuring the highest state of operational readiness for the nation's heavy armored vehicle fleet. Our primary focus is the TU-85 Main Battle Tank, a cornerstone of our ground forces. We specialize in the meticulous repair, rigorous testing, and complete overhaul of all critical TU-85 components.
+                        The Armored Systems Repair Facility (ASRF) is dedicated to ensuring the highest state of operational readiness for the nation's heavy armored vehicle fleet. Our primary focus is the T-85 Main Battle Tank, a cornerstone of our ground forces. We specialize in the meticulous repair, rigorous testing, and complete overhaul of all critical T-85 components.
                     </p>
                     <p>
                         Leveraging state-of-the-art diagnostics and a team of highly skilled technicians, we minimize downtime and maximize vehicle lifespan. ASRF Tracker, our proprietary management system, provides unparalleled transparency into our operations, allowing for real-time monitoring and data-driven decision-making to maintain peak fleet performance.
@@ -27,7 +27,7 @@ export default function AboutPage() {
                 </CardHeader>
                 <CardContent className="text-muted-foreground">
                     <p>
-                        Our facility is comprised of specialized labs, each dedicated to a specific subsystem of the TU-85. This includes the Hull Lab, Electrical Lab, Turret Lab, Engine Lab, and Transmission lab. This specialized approach ensures that every component receives expert attention, adhering to the strictest military specifications and quality standards.
+                        Our facility is comprised of specialized labs, each dedicated to a specific subsystem of the T-85. This includes the Hull Lab, Electrical Lab, Turret Lab, Engine Lab, and Transmission lab. This specialized approach ensures that every component receives expert attention, adhering to the strictest military specifications and quality standards.
                     </p>
                 </CardContent>
             </Card>
@@ -36,11 +36,11 @@ export default function AboutPage() {
             <Card className="overflow-hidden">
                 <div className="relative h-96 w-full">
                     <Image
-                        src="https://picsum.photos/seed/tank/600/800"
-                        alt="Army Tank"
+                        src="https://picsum.photos/seed/military/800/600"
+                        alt="Military Complex"
                         fill
                         className="object-cover"
-                        data-ai-hint="army tank"
+                        data-ai-hint="military complex"
                     />
                 </div>
                 <CardHeader>

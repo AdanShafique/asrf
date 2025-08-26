@@ -93,7 +93,7 @@ export function ContactForm() {
                     <FormItem>
                     <FormLabel>Subject</FormLabel>
                     <FormControl>
-                        <Input placeholder="Regarding Part TU85-E-003" {...field} />
+                        <Input placeholder="Regarding Part T85-E-003" {...field} />
                     </FormControl>
                     <FormMessage />
                     </FormItem>

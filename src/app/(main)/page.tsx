@@ -49,7 +49,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <PageHeader title="Dashboard" description="Overview of TU-85 parts repair and testing status." />
+      <PageHeader title="Dashboard" description="Overview of T-85 parts repair and testing status." />
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard title="Total Parts" value={totalParts} icon={<Package />} />
         <StatCard title="Repaired Parts" value={repairedParts} icon={<CheckCircle2 />} colorClassName="text-accent"/>
