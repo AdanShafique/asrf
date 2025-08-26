@@ -37,10 +37,10 @@ export default function AboutPage() {
                 <div className="relative h-96 w-full">
                     <Image
                         src="https://picsum.photos/600/800"
-                        alt="ASRF Facility"
+                        alt="Army Tank"
                         fill
                         className="object-cover"
-                        data-ai-hint="military workshop"
+                        data-ai-hint="army tank"
                     />
                 </div>
                 <CardHeader>
