@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
 import { PlusCircle } from "lucide-react";
@@ -13,6 +14,15 @@ import type { Part } from "@/lib/types";
 export default function PartsPage() {
   const [parts, setParts] = useLocalStorageState<Part[]>("parts", initialParts);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
 
   const handleAddPart = (part: Omit<Part, 'id' | 'status' | 'repairedAt' | 'repairTime' | 'testingTime'>) => {
     const newPart: Part = {

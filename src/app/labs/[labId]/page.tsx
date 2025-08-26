@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, notFound } from "next/navigation";
 import { initialParts, labs } from "@/lib/data";
 import { PageHeader } from "@/components/page-header";
@@ -14,14 +15,24 @@ export default function LabDetailPage() {
 
   const [allParts, setAllParts] = useLocalStorageState<Part[]>("parts", initialParts);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   
   const lab = labs.find((l) => l.id === labId);
-  const partsInLab = allParts.filter((p) => p.labId === labId);
 
   if (!lab) {
     notFound();
   }
+
+  if (!isClient) {
+    return null;
+  }
   
+  const partsInLab = allParts.filter((p) => p.labId === labId);
+
   const handleAddPart = (part: Omit<Part, 'id' | 'status' | 'repairedAt' | 'repairTime' | 'testingTime'>) => {
     const newPart: Part = {
         ...part,

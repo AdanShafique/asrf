@@ -8,9 +8,21 @@ import { PartsTable } from "@/components/parts/parts-table";
 import { initialParts, labs } from "@/lib/data";
 import { useLocalStorageState } from "@/hooks/use-local-storage-state";
 import type { Part } from "@/lib/types";
+import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
   const [parts, setParts] = useLocalStorageState<Part[]>("parts", initialParts);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    // Render a loading state or null on the server
+    // to avoid using localStorage data before hydration.
+    return null; 
+  }
 
   const totalParts = parts.length;
   const repairedCount = parts.filter(p => p.status === 'Repaired').length;
