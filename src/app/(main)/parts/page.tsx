@@ -10,15 +10,30 @@ import { AddPartDialog } from "@/components/parts/add-part-dialog";
 import type { Part } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 
+const getLabPrefix = (labId: string) => {
+    switch (labId) {
+        case "turret-elec": return "TE";
+        case "hull-lab-1": return "HL1";
+        case "hull-lab-2": return "HL2";
+        case "gcs-lab": return "GCS";
+        case "elec-harness-lab": return "EHL";
+        default: return "P";
+    }
+};
+
 export default function PartsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false);
   const [parts, setParts] = React.useState<Part[]>(initialParts);
   const { toast } = useToast();
 
   const handleAddPart = (newPartData: Omit<Part, 'id' | 'status' | 'repairedAt' | 'repairTime' | 'testingTime'>) => {
+    const labPrefix = getLabPrefix(newPartData.labId);
+    const partsInLab = parts.filter(p => p.labId === newPartData.labId);
+    const newPartNumber = (partsInLab.length + 1).toString().padStart(3, '0');
+    
     const newPart: Part = {
         ...newPartData,
-        id: `P${(parts.length + 1).toString().padStart(4, '0')}`,
+        id: `${labPrefix}-${newPartNumber}`,
         status: 'Under Testing',
         repairTime: 0,
         testingTime: 0,
@@ -28,7 +43,7 @@ export default function PartsPage() {
     setIsAddDialogOpen(false);
     toast({
         title: "Part Added",
-        description: `Part ${newPart.name} has been successfully added.`,
+        description: `Part ${newPart.name} has been successfully added with ID ${newPart.id}.`,
     });
   };
 
