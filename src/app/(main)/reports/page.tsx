@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -14,7 +15,7 @@ export default function ReportsPage() {
         return labs.find((lab) => lab.id === labId)?.name || "Unknown Lab";
     };
 
-    const headers = ["Part ID", "Name", "Assigned Lab", "Status", "Repair Time (h)", "Testing Time (h)", "Repaired At"];
+    const headers = ["Part ID", "Name", "Assigned Lab", "Status", "Repair Time", "Testing Time", "Repaired At"];
     const csvContent = [
       headers.join(","),
       ...parts.map(part => [
@@ -22,8 +23,8 @@ export default function ReportsPage() {
         `"${part.name.replace(/"/g, '""')}"`, // Handle quotes in names
         getLabName(part.labId),
         part.status,
-        part.repairTime,
-        part.testingTime,
+        `${part.repairTime} hr`,
+        `${part.testingTime} hr`,
         part.repairedAt.toLocaleDateString()
       ].join(","))
     ].join("\n");
