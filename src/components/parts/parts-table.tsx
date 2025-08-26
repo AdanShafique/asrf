@@ -34,11 +34,12 @@ import { cn } from "@/lib/utils";
 type PartsTableProps = {
   parts: Part[];
   labs: Lab[];
+  onAddPart: (part: Omit<Part, 'id' | 'status' | 'repairedAt' | 'repairTime' | 'testingTime'>) => void;
 };
 
 const ITEMS_PER_PAGE = 10;
 
-export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
+export function PartsTable({ parts: initialParts, labs, onAddPart }: PartsTableProps) {
   const [parts, setParts] = React.useState(initialParts);
   const [filter, setFilter] = React.useState("");
   const [sortConfig, setSortConfig] = React.useState<{ key: keyof Part; direction: string } | null>(null);
@@ -52,6 +53,10 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
 
   const { toast } = useToast();
+  
+  React.useEffect(() => {
+    setParts(initialParts);
+  }, [initialParts]);
 
   const getLabName = (labId: string) => {
     return labs.find((lab) => lab.id === labId)?.name || "Unknown Lab";
@@ -82,6 +87,11 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
       sortableParts.sort((a, b) => {
         const aValue = a[sortConfig.key];
         const bValue = b[sortConfig.key];
+        
+        if (aValue instanceof Date && bValue instanceof Date) {
+            return sortConfig.direction === 'ascending' ? aValue.getTime() - bValue.getTime() : bValue.getTime() - aValue.getTime();
+        }
+
         if (aValue < bValue) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
         }
@@ -247,6 +257,9 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
         </Table>
       </div>
       <div className="flex items-center justify-between space-x-2 py-4">
+        <div className="text-sm text-muted-foreground">
+          Showing {Math.min(paginatedParts.length, ITEMS_PER_PAGE * currentPage)} of {filteredParts.length} parts.
+        </div>
         <div className="text-sm text-muted-foreground">
           Page {currentPage} of {totalPages}
         </div>
