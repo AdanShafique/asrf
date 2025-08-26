@@ -23,7 +23,7 @@ import {
 import Link from "next/link";
 
 const menuItems = [
-  { href: "/", label: "Home", icon: LayoutDashboard },
+  { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/parts", label: "Parts", icon: Wrench },
   { href: "/labs", label: "Labs", icon: FlaskConical },
   { href: "/reports", label: "Reports", icon: BarChart },

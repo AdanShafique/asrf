@@ -1,24 +1,109 @@
 import type { Part, Lab } from "./types";
 
+function getRandomStatus(): "Functional" | "Under Testing" | "Defective" {
+  const statuses: ("Functional" | "Under Testing" | "Defective")[] = ["Functional", "Under Testing", "Defective"];
+  return statuses[Math.floor(Math.random() * statuses.length)];
+}
+
+function getRandomDate(): Date {
+    const start = new Date(2023, 0, 1);
+    const end = new Date();
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+
 export const labs: Lab[] = [
-  { id: "hull-lab", name: "Hull Lab" },
-  { id: "electrical-lab", name: "Electrical Lab" },
-  { id: "turret-lab", name: "Turret Lab" },
-  { id: "engine-lab", name: "Engine Lab" },
-  { id: "transmission-lab", name: "Transmission Lab" },
+  { id: "turret-elec", name: "Turret Elec" },
+  { id: "hull-lab-1", name: "Hull Lab-I" },
+  { id: "hull-lab-2", name: "Hull Lab-II" },
+  { id: "gcs-lab", name: "GCS Lab" },
+  { id: "elec-harness-lab", name: "Elec Harness Lab" },
 ];
 
-export const parts: Part[] = [
-  { id: "TU85-H-001", name: "Front Glacis Plate", labId: "hull-lab", status: "Functional", repairTime: 20, testingTime: 5, repairedAt: new Date("2023-10-15") },
-  { id: "TU85-T-002", name: "Main Gun Breech", labId: "turret-lab", status: "Under Testing", repairTime: 35, testingTime: 10, repairedAt: new Date("2023-11-01") },
-  { id: "TU85-E-003", name: "V-92S2F Engine", labId: "engine-lab", status: "Defective", repairTime: 120, testingTime: 24, repairedAt: new Date("2023-11-05") },
-  { id: "TU85-EL-004", name: "Gunner's Primary Sight", labId: "electrical-lab", status: "Functional", repairTime: 15, testingTime: 8, repairedAt: new Date("2023-11-10") },
-  { id: "TU85-TR-005", name: "Planetary Transmission", labId: "transmission-lab", status: "Functional", repairTime: 80, testingTime: 15, repairedAt: new Date("2023-10-22") },
-  { id: "TU85-H-006", name: "Side Skirt Panel", labId: "hull-lab", status: "Under Testing", repairTime: 10, testingTime: 3, repairedAt: new Date("2023-11-12") },
-  { id: "TU85-T-007", name: "Turret Ring Bearing", labId: "turret-lab", status: "Functional", repairTime: 50, testingTime: 12, repairedAt: new Date("2023-09-30") },
-  { id: "TU85-E-008", name: "Fuel Injector System", labId: "engine-lab", status: "Defective", repairTime: 30, testingTime: 7, repairedAt: new Date("2023-11-14") },
-  { id: "TU85-EL-009", name: "Commander's Control Panel", labId: "electrical-lab", status: "Under Testing", repairTime: 25, testingTime: 6, repairedAt: new Date("2023-11-18") },
-  { id: "TU85-TR-010", name: "Brake Band Assembly", labId: "transmission-lab", status: "Functional", repairTime: 40, testingTime: 9, repairedAt: new Date("2023-11-20") },
-  { id: "TU85-H-011", name: "Driver's Hatch", labId: "hull-lab", status: "Functional", repairTime: 8, testingTime: 2, repairedAt: new Date("2023-11-21") },
-  { id: "TU85-T-012", name: "Ammunition Autoloader", labId: "turret-lab", status: "Defective", repairTime: 60, testingTime: 20, repairedAt: new Date("2023-11-25") },
+const turretElecParts: Omit<Part, 'id' | 'status' | 'repairedAt' | 'repairTime' | 'testingTime'>[] = [
+    { name: "Temp cont Box", labId: "turret-elec"},
+    { name: "KS2 Steering cont Box", labId: "turret-elec"},
+    { name: "Fan cont Relay JZ103", labId: "turret-elec"},
+    { name: "Smoke screen cont Box T-25", labId: "turret-elec"},
+    { name: "AAMG cont Box", labId: "turret-elec"},
+    { name: "Connecting Box with support", labId: "turret-elec"},
+    { name: "Gunner Dist Box", labId: "turret-elec"},
+    { name: "Commd Dist Box", labId: "turret-elec"},
+    { name: "Electromagnetic w/ handle", labId: "turret-elec"},
+    { name: "Electromagnetic cont Assy", labId: "turret-elec"},
+    { name: "Dust removing forced blower fan", labId: "turret-elec"},
+    { name: "EM Traversing Motor", labId: "turret-elec"},
 ];
+
+const hullLab1Parts: Omit<Part, 'id' | 'status' | 'repairedAt' | 'repairTime' | 'testingTime'>[] = [
+    { name: "Voltage regulator", labId: "hull-lab-1"},
+    { name: "Small fan", labId: "hull-lab-1"},
+    { name: "Rectifier", labId: "hull-lab-1"},
+    { name: "Oil pump motor", labId: "hull-lab-1"},
+    { name: "Smoke motor", labId: "hull-lab-1"},
+    { name: "Bilge pump motor", labId: "hull-lab-1"},
+];
+
+const hullLab2Parts: Omit<Part, 'id' | 'status' | 'repairedAt' | 'repairTime' | 'testingTime'>[] = [
+    { name: "Emergency lamp", labId: "hull-lab-2"},
+    { name: "XZN Travel Sw", labId: "hull-lab-2"},
+    { name: "Steering indicator", labId: "hull-lab-2"},
+    { name: "Head lamp", labId: "hull-lab-2"},
+    { name: "Dvr Hatch locking device", labId: "hull-lab-2"},
+    { name: "Azmith lamp", labId: "hull-lab-2"},
+    { name: "Illu Lamp with Sw", labId: "hull-lab-2"},
+    { name: "Number lamp", labId: "hull-lab-2"},
+    { name: "Digits", labId: "hull-lab-2"},
+    { name: "Leveller Illu Sw", labId: "hull-lab-2"},
+    { name: "Front top light", labId: "hull-lab-2"},
+    { name: "Rear top light", labId: "hull-lab-2"},
+    { name: "Dvr distribution board", labId: "hull-lab-2"},
+    { name: "Thermal smoke screen control box", labId: "hull-lab-2"},
+    { name: "Marker lamp red", labId: "hull-lab-2"},
+    { name: "Rotary base junction", labId: "hull-lab-2"},
+    { name: "Marker lamp green", labId: "hull-lab-2"},
+    { name: "Electric brush box", labId: "hull-lab-2"},
+    { name: "Bracket body", labId: "hull-lab-2"},
+    { name: "Fire Ext cont box", labId: "hull-lab-2"},
+    { name: "Emergency Sw", labId: "hull-lab-2"},
+    { name: "Optical detector", labId: "hull-lab-2"},
+];
+
+const gcsLabParts: Omit<Part, 'id' | 'status' | 'repairedAt' | 'repairTime' | 'testingTime'>[] = [
+    { name: "SBL 53", labId: "gcs-lab"},
+    { name: "AL motor", labId: "gcs-lab"},
+    { name: "Loading cont box", labId: "gcs-lab"},
+    { name: "Driving converter", labId: "gcs-lab"},
+    { name: "Angle limiter", labId: "gcs-lab"},
+    { name: "EM clutch", labId: "gcs-lab"},
+    { name: "Turret motor", labId: "gcs-lab"},
+    { name: "Mag solenoid", labId: "gcs-lab"},
+    { name: "Voltage booster", labId: "gcs-lab"},
+    { name: "Hoist solenoid", labId: "gcs-lab"},
+];
+
+const elecHarnessLabParts: Omit<Part, 'id' | 'status' | 'repairedAt' | 'repairTime' | 'testingTime'>[] = [
+    { name: "Rotary cable", labId: "elec-harness-lab"},
+    { name: "Shrapnel cable", labId: "elec-harness-lab"},
+    { name: "Bulkhead plug cable", labId: "elec-harness-lab"},
+    { name: "DDB cable", labId: "elec-harness-lab"},
+    { name: "Fire Ext small cable", labId: "elec-harness-lab"},
+    { name: "Indicator with cable", labId: "elec-harness-lab"},
+    { name: "Hebon cylindrical cable", labId: "elec-harness-lab"},
+];
+
+const allParts = [
+    ...turretElecParts,
+    ...hullLab1Parts,
+    ...hullLab2Parts,
+    ...gcsLabParts,
+    ...elecHarnessLabParts
+];
+
+export const parts: Part[] = allParts.map((part, index) => ({
+  ...part,
+  id: `P${(index + 1).toString().padStart(4, '0')}`,
+  status: getRandomStatus(),
+  repairTime: Math.floor(Math.random() * 100) + 1,
+  testingTime: Math.floor(Math.random() * 24) + 1,
+  repairedAt: getRandomDate(),
+}));
