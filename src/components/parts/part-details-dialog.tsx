@@ -60,7 +60,7 @@ export function PartDetailsDialog({ isOpen, setIsOpen, part, labName }: PartDeta
             <Separator />
             <DetailRow label="Testing Time" value={`${part.testingTime} hours`} />
             <Separator />
-            <DetailRow label="Last Updated" value={part.repairedAt.toLocaleDateString()} />
+            <DetailRow label="Repaired At" value={part.repairedAt.toLocaleDateString()} />
         </div>
       </DialogContent>
     </Dialog>

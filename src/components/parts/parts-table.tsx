@@ -103,7 +103,7 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
   );
   
   const handleStatusChange = (partId: string, newStatus: PartStatus) => {
-    setParts(parts.map(p => p.id === partId ? { ...p, status: newStatus } : p));
+    setParts(parts.map(p => p.id === partId ? { ...p, status: newStatus, repairedAt: new Date() } : p));
   };
 
   const handleDelete = (partId: string) => {
@@ -153,7 +153,12 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
               </TableHead>
               <TableHead>Lab Assigned</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Last Updated</TableHead>
+              <TableHead>
+                <Button variant="ghost" onClick={() => requestSort('repairedAt')}>
+                  Repaired At
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
