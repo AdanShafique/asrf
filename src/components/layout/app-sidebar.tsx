@@ -20,7 +20,6 @@ import {
   Info,
   Mail,
   Tractor,
-  Upload,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -29,7 +28,6 @@ const menuItems = [
   { href: "/parts", label: "Parts", icon: Wrench },
   { href: "/labs", label: "Labs", icon: FlaskConical },
   { href: "/reports", label: "Reports", icon: BarChart },
-  { href: "/uploader", label: "Uploader", icon: Upload },
   { href: "/about", label: "About", icon: Info },
   { href: "/contact", label: "Contact", icon: Mail },
 ];
