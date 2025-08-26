@@ -27,6 +27,8 @@ import { Input } from "@/components/ui/input";
 import type { Part, PartStatus, Lab } from "@/lib/types";
 import { DeletePartDialog } from "./delete-part-dialog";
 import { PartDetailsDialog } from "./part-details-dialog";
+import { EditPartDialog } from "./edit-part-dialog";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 type PartsTableProps = {
@@ -44,8 +46,12 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
 
   const [partToDelete, setPartToDelete] = React.useState<Part | null>(null);
   const [partToView, setPartToView] = React.useState<Part | null>(null);
+  const [partToEdit, setPartToEdit] = React.useState<Part | null>(null);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = React.useState(false);
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = React.useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
+
+  const { toast } = useToast();
 
   const getLabName = (labId: string) => {
     return labs.find((lab) => lab.id === labId)?.name || "Unknown Lab";
@@ -122,6 +128,21 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
     setIsDetailsDialogOpen(true);
   };
 
+  const openEditDialog = (part: Part) => {
+    setPartToEdit(part);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleEdit = (updatedPart: Part) => {
+    setParts(parts.map(p => p.id === updatedPart.id ? updatedPart : p));
+    setIsEditDialogOpen(false);
+    setPartToEdit(null);
+    toast({
+        title: "Part Updated",
+        description: `Part ${updatedPart.id} has been successfully updated.`,
+    })
+  };
+
   return (
     <>
       <div className="flex items-center py-4">
@@ -185,7 +206,7 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
                           <Eye className="mr-2 h-4 w-4" />
                           View Details
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => openEditDialog(part)}>
                           <Pencil className="mr-2 h-4 w-4" />
                           Edit
                         </DropdownMenuItem>
@@ -264,6 +285,15 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
             setIsOpen={setIsDetailsDialogOpen}
             part={partToView}
             labName={getLabName(partToView.labId)}
+        />
+      )}
+      {partToEdit && (
+        <EditPartDialog
+            isOpen={isEditDialogOpen}
+            setIsOpen={setIsEditDialogOpen}
+            part={partToEdit}
+            labs={labs}
+            onSave={handleEdit}
         />
       )}
     </>

@@ -1,0 +1,122 @@
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+    DialogClose,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type { Part, Lab } from "@/lib/types";
+
+interface EditPartDialogProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  part: Part;
+  labs: Lab[];
+  onSave: (part: Part) => void;
+}
+
+const formSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters."),
+  labId: z.string({ required_error: "Please select a lab." }),
+});
+
+export function EditPartDialog({ isOpen, setIsOpen, part, labs, onSave }: EditPartDialogProps) {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: part.name,
+      labId: part.labId,
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    onSave({
+        ...part,
+        ...values,
+    });
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Edit Part</DialogTitle>
+          <DialogDescription>
+            Update the details for part ID: {part.id}
+          </DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Part Name</FormLabel>
+                        <FormControl>
+                            <Input placeholder="Part Name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="labId"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Assigned Lab</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a lab" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            {labs.map(lab => (
+                                <SelectItem key={lab.id} value={lab.id}>
+                                    {lab.name}
+                                </SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <DialogFooter className="pt-4">
+                    <DialogClose asChild>
+                        <Button type="button" variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button type="submit">Save Changes</Button>
+                </DialogFooter>
+            </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}
