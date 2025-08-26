@@ -1,0 +1,53 @@
+"use client";
+
+import { useState } from "react";
+import { useParams, notFound } from "next/navigation";
+import { initialParts, labs } from "@/lib/data";
+import { PageHeader } from "@/components/page-header";
+import { PartsTable } from "@/components/parts/parts-table";
+import { useLocalStorageState } from "@/hooks/use-local-storage-state";
+import type { Part } from "@/lib/types";
+
+export default function LabDetailPage() {
+  const params = useParams();
+  const labId = params.labId as string;
+
+  const [allParts, setAllParts] = useLocalStorageState<Part[]>("parts", initialParts);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  
+  const lab = labs.find((l) => l.id === labId);
+  const partsInLab = allParts.filter((p) => p.labId === labId);
+
+  if (!lab) {
+    notFound();
+  }
+  
+  const handleAddPart = (part: Omit<Part, 'id' | 'status' | 'repairedAt' | 'repairTime' | 'testingTime'>) => {
+    const newPart: Part = {
+        ...part,
+        id: `TE-${Math.floor(Math.random() * 1000)}`, // temporary id
+        status: "Under Testing",
+        repairedAt: new Date(),
+        repairTime: 0,
+        testingTime: 0,
+    };
+    setAllParts(currentParts => [...currentParts, newPart]);
+    setIsAddDialogOpen(false);
+  };
+
+
+  return (
+    <>
+      <PageHeader
+        title={lab.name}
+        description={`Viewing all parts assigned to ${lab.name}.`}
+      />
+      <PartsTable 
+        parts={partsInLab} 
+        labs={labs}
+        setParts={setAllParts} 
+        onAddPart={handleAddPart} 
+      />
+    </>
+  );
+}
