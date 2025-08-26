@@ -37,7 +37,7 @@ type PartsTableProps = {
   onAddPart: (part: Omit<Part, 'id' | 'status' | 'repairedAt' | 'repairTime' | 'testingTime'>) => void;
 };
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 19;
 
 export function PartsTable({ parts: initialParts, labs, onAddPart }: PartsTableProps) {
   const [parts, setParts] = React.useState(initialParts);
