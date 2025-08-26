@@ -1,6 +1,7 @@
 import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { BackButton } from "@/components/back-button";
 
 const teamMembers = [
     { name: "Maj. Gen. Ahmad", role: "Project Director", avatar: "AG" },
@@ -15,7 +16,9 @@ export default function AboutPage() {
         <PageHeader 
             title="About ASRF Tracker"
             description="Learn more about the project, its mission, and the team."
-        />
+        >
+          <BackButton />
+        </PageHeader>
         <div className="space-y-8">
             <Card>
                 <CardHeader>

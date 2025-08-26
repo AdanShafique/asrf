@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/page-header";
 import { PartsTable } from "@/components/parts/parts-table";
 import { useLocalStorageState } from "@/hooks/use-local-storage-state";
 import type { Part } from "@/lib/types";
+import { BackButton } from "@/components/back-button";
 
 export default function LabDetailPage() {
   const params = useParams();
@@ -52,7 +53,9 @@ export default function LabDetailPage() {
       <PageHeader
         title={lab.name}
         description={`Viewing all parts assigned to ${lab.name}.`}
-      />
+      >
+        <BackButton />
+      </PageHeader>
       <PartsTable 
         parts={partsInLab} 
         labs={labs}
