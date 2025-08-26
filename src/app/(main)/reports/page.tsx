@@ -28,7 +28,7 @@ export default function ReportsPage() {
         part.status,
         `${part.repairTime} hr`,
         `${part.testingTime} hr`,
-        part.repairedAt.toLocaleDateString()
+        part.repairedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
       ].join(","))
     ].join("\n");
 
