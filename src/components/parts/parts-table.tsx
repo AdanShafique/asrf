@@ -17,20 +17,35 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, ArrowUpDown } from "lucide-react";
+import { MoreHorizontal, ArrowUpDown, ChevronLeft, ChevronRight, Eye, Pencil, Trash2, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import type { Part, PartStatus, Lab } from "@/lib/types";
+import { DeletePartDialog } from "./delete-part-dialog";
+import { PartDetailsDialog } from "./part-details-dialog";
+import { cn } from "@/lib/utils";
 
 type PartsTableProps = {
   parts: Part[];
   labs: Lab[];
 };
 
+const ITEMS_PER_PAGE = 10;
+
 export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
   const [parts, setParts] = React.useState(initialParts);
   const [filter, setFilter] = React.useState("");
   const [sortConfig, setSortConfig] = React.useState<{ key: keyof Part; direction: string } | null>(null);
+  const [currentPage, setCurrentPage] = React.useState(1);
+
+  const [partToDelete, setPartToDelete] = React.useState<Part | null>(null);
+  const [partToView, setPartToView] = React.useState<Part | null>(null);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = React.useState(false);
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = React.useState(false);
 
   const getLabName = (labId: string) => {
     return labs.find((lab) => lab.id === labId)?.name || "Unknown Lab";
@@ -59,10 +74,12 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
     let sortableParts = [...parts];
     if (sortConfig !== null) {
       sortableParts.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
+        const aValue = a[sortConfig.key];
+        const bValue = b[sortConfig.key];
+        if (aValue < bValue) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
+        if (aValue > bValue) {
           return sortConfig.direction === 'ascending' ? 1 : -1;
         }
         return 0;
@@ -75,16 +92,46 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
     (part) =>
       part.id.toLowerCase().includes(filter.toLowerCase()) ||
       part.name.toLowerCase().includes(filter.toLowerCase()) ||
-      getLabName(part.labId).toLowerCase().includes(filter.toLowerCase())
+      getLabName(part.labId).toLowerCase().includes(filter.toLowerCase()) ||
+      part.status.toLowerCase().includes(filter.toLowerCase())
   );
 
+  const totalPages = Math.ceil(filteredParts.length / ITEMS_PER_PAGE);
+  const paginatedParts = filteredParts.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+  
+  const handleStatusChange = (partId: string, newStatus: PartStatus) => {
+    setParts(parts.map(p => p.id === partId ? { ...p, status: newStatus } : p));
+  };
+
+  const handleDelete = (partId: string) => {
+    setParts(parts.filter(p => p.id !== partId));
+    setIsDeleteAlertOpen(false);
+    setPartToDelete(null);
+  };
+  
+  const openDeleteDialog = (part: Part) => {
+    setPartToDelete(part);
+    setIsDeleteAlertOpen(true);
+  };
+  
+  const openDetailsDialog = (part: Part) => {
+    setPartToView(part);
+    setIsDetailsDialogOpen(true);
+  };
+
   return (
-    <div>
+    <>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter parts by ID, name, or lab..."
+          placeholder="Filter parts by ID, name, lab, or status..."
           value={filter}
-          onChange={(event) => setFilter(event.target.value)}
+          onChange={(event) => {
+            setFilter(event.target.value);
+            setCurrentPage(1); // Reset to first page on new filter
+          }}
           className="max-w-sm"
         />
       </div>
@@ -106,21 +153,19 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
               </TableHead>
               <TableHead>Lab Assigned</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="text-right">Repair Time (h)</TableHead>
-              <TableHead className="text-right">Testing Time (h)</TableHead>
+              <TableHead>Last Updated</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredParts.length > 0 ? (
-              filteredParts.map((part) => (
+            {paginatedParts.length > 0 ? (
+              paginatedParts.map((part) => (
                 <TableRow key={part.id}>
                   <TableCell className="font-medium">{part.id}</TableCell>
                   <TableCell>{part.name}</TableCell>
                   <TableCell>{getLabName(part.labId)}</TableCell>
                   <TableCell>{getStatusBadge(part.status)}</TableCell>
-                  <TableCell className="text-right">{part.repairTime}</TableCell>
-                  <TableCell className="text-right">{part.testingTime}</TableCell>
+                  <TableCell>{part.repairedAt.toLocaleDateString()}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -131,8 +176,35 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>Update</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive focus:text-destructive">Delete</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => openDetailsDialog(part)}>
+                          <Eye className="mr-2 h-4 w-4" />
+                          View Details
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Pencil className="mr-2 h-4 w-4" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuSub>
+                           <DropdownMenuSubTrigger>
+                                Change Status
+                           </DropdownMenuSubTrigger>
+                           <DropdownMenuSubContent>
+                               <DropdownMenuItem onClick={() => handleStatusChange(part.id, 'Functional')}>
+                                   <CheckCircle className="mr-2 h-4 w-4 text-accent"/> Functional
+                               </DropdownMenuItem>
+                               <DropdownMenuItem onClick={() => handleStatusChange(part.id, 'Under Testing')}>
+                                   <Clock className="mr-2 h-4 w-4 text-secondary"/> Under Testing
+                               </DropdownMenuItem>
+                               <DropdownMenuItem onClick={() => handleStatusChange(part.id, 'Defective')}>
+                                   <AlertCircle className="mr-2 h-4 w-4 text-destructive"/> Defective
+                               </DropdownMenuItem>
+                           </DropdownMenuSubContent>
+                        </DropdownMenuSub>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onSelect={() => openDeleteDialog(part)} className="text-destructive focus:text-destructive">
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -140,7 +212,7 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">
+                <TableCell colSpan={6} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>
@@ -148,6 +220,47 @@ export function PartsTable({ parts: initialParts, labs }: PartsTableProps) {
           </TableBody>
         </Table>
       </div>
-    </div>
+      <div className="flex items-center justify-between space-x-2 py-4">
+        <div className="text-sm text-muted-foreground">
+          Page {currentPage} of {totalPages}
+        </div>
+        <div className="space-x-2">
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+            >
+                <ChevronLeft className="mr-2 h-4 w-4" />
+                Previous
+            </Button>
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+            >
+                Next
+                <ChevronRight className="ml-2 h-4 w-4" />
+            </Button>
+        </div>
+      </div>
+      {partToDelete && (
+        <DeletePartDialog
+          isOpen={isDeleteAlertOpen}
+          setIsOpen={setIsDeleteAlertOpen}
+          part={partToDelete}
+          onDelete={handleDelete}
+        />
+      )}
+      {partToView && (
+        <PartDetailsDialog
+            isOpen={isDetailsDialogOpen}
+            setIsOpen={setIsDetailsDialogOpen}
+            part={partToView}
+            labName={getLabName(partToView.labId)}
+        />
+      )}
+    </>
   );
 }
