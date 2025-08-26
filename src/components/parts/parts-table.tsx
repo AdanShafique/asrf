@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -35,12 +36,12 @@ type PartsTableProps = {
   parts: Part[];
   labs: Lab[];
   onAddPart: (part: Omit<Part, 'id' | 'status' | 'repairedAt' | 'repairTime' | 'testingTime'>) => void;
+  setParts: React.Dispatch<React.SetStateAction<Part[]>>;
 };
 
 const ITEMS_PER_PAGE = 19;
 
-export function PartsTable({ parts: initialParts, labs, onAddPart }: PartsTableProps) {
-  const [parts, setParts] = React.useState(initialParts);
+export function PartsTable({ parts: initialParts, labs, setParts }: PartsTableProps) {
   const [filter, setFilter] = React.useState("");
   const [sortConfig, setSortConfig] = React.useState<{ key: keyof Part; direction: string } | null>(null);
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -54,9 +55,7 @@ export function PartsTable({ parts: initialParts, labs, onAddPart }: PartsTableP
 
   const { toast } = useToast();
   
-  React.useEffect(() => {
-    setParts(initialParts);
-  }, [initialParts]);
+  const parts = initialParts;
 
   const getLabName = (labId: string) => {
     return labs.find((lab) => lab.id === labId)?.name || "Unknown Lab";
