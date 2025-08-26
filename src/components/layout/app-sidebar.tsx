@@ -24,7 +24,7 @@ import {
 import Link from "next/link";
 
 const menuItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/parts", label: "Parts", icon: Wrench },
   { href: "/labs", label: "Labs", icon: FlaskConical },
   { href: "/reports", label: "Reports", icon: BarChart },
@@ -51,7 +51,7 @@ export function AppSidebar() {
         <SidebarMenu>
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.href}>
-              <Link href={item.href} asChild>
+              <Link href={item.href} passHref>
                 <SidebarMenuButton
                   isActive={pathname === item.href}
                   tooltip={item.label}
