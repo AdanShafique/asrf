@@ -2,6 +2,7 @@ import { PageHeader } from "@/components/page-header";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { labs, parts } from "@/lib/data";
 import { Wrench, Clock, FlaskConical, Package, CheckCircle2 } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 export default function LabsPage() {
   const labStats = labs.map((lab) => {
@@ -33,27 +34,40 @@ export default function LabsPage() {
                 <FlaskConical className="h-6 w-6 text-primary" />
               </div>
             </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-4 flex-grow">
-                <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-muted">
-                   <Package className="h-8 w-8 text-muted-foreground mb-2" />
-                   <p className="text-2xl font-bold">{lab.totalParts}</p>
-                   <p className="text-sm text-center text-muted-foreground">Total Parts</p>
+            <CardContent className="flex-grow">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Package className="h-6 w-6 text-muted-foreground" />
+                    <span className="text-muted-foreground">Total Parts</span>
+                  </div>
+                  <span className="font-bold text-lg">{lab.totalParts}</span>
                 </div>
-                <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-muted">
-                   <CheckCircle2 className="h-8 w-8 text-accent mb-2" />
-                   <p className="text-2xl font-bold">{lab.repairedParts}</p>
-                   <p className="text-sm text-center text-muted-foreground">Repaired</p>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="h-6 w-6 text-accent" />
+                    <span className="text-muted-foreground">Repaired</span>
+                  </div>
+                  <span className="font-bold text-lg">{lab.repairedParts}</span>
                 </div>
-                 <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-muted">
-                   <Wrench className="h-8 w-8 text-secondary mb-2" />
-                   <p className="text-2xl font-bold">{lab.currentWorkload}</p>
-                   <p className="text-sm text-center text-muted-foreground">In Testing</p>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Wrench className="h-6 w-6 text-secondary" />
+                    <span className="text-muted-foreground">In Testing</span>
+                  </div>
+                  <span className="font-bold text-lg">{lab.currentWorkload}</span>
                 </div>
-                 <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-muted">
-                   <Clock className="h-8 w-8 text-blue-500 mb-2" />
-                   <p className="text-2xl font-bold">{lab.averageRepairTime}<span className="text-base font-normal text-muted-foreground">h</span></p>
-                   <p className="text-sm text-center text-muted-foreground">Avg. Time</p>
+                <Separator />
+                <div className="flex items-center justify-between">
+                   <div className="flex items-center gap-3">
+                    <Clock className="h-6 w-6 text-blue-500" />
+                    <span className="text-muted-foreground">Avg. Repair Time</span>
+                  </div>
+                  <span className="font-bold text-lg">{lab.averageRepairTime}<span className="text-sm font-normal text-muted-foreground">h</span></span>
                 </div>
+              </div>
             </CardContent>
           </Card>
         ))}
