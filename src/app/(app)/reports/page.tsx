@@ -6,17 +6,50 @@ import { ReportCharts } from "@/components/reports/report-charts";
 import { initialParts } from "@/lib/data";
 import { useLocalStorageState } from "@/hooks/use-local-storage-state";
 import type { Part } from "@/lib/types";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, Loader } from "lucide-react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export default function ReportsPage() {
   const [parts] = useLocalStorageState<Part[]>("parts", initialParts);
   const [isClient, setIsClient] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const reportRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+  
+  const handleDownload = async () => {
+    if (!reportRef.current) return;
+    setIsDownloading(true);
+
+    try {
+        const canvas = await html2canvas(reportRef.current, {
+            scale: 2, // Higher scale for better quality
+            useCORS: true,
+            backgroundColor: null, 
+        });
+
+        const pdf = new jsPDF({
+            orientation: "landscape",
+            unit: "px",
+            format: [canvas.width, canvas.height]
+        });
+
+        pdf.addImage(canvas.toDataURL("image/png", 1.0), "PNG", 0, 0, canvas.width, canvas.height);
+        pdf.save("ASRF-Report.pdf");
+
+    } catch (error) {
+        console.error("Error generating PDF:", error);
+    } finally {
+        setIsDownloading(false);
+    }
+  };
+
 
   if (!isClient) {
     return null;
@@ -28,12 +61,21 @@ export default function ReportsPage() {
         title="Reports & Analytics"
         description="Visualize repair data and lab performance."
       >
-        <Button onClick={() => window.print()}>
-            <Download className="mr-2 h-4 w-4" />
-            Download Report
+        <Button onClick={handleDownload} disabled={isDownloading}>
+            {isDownloading ? (
+                <>
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                    Downloading...
+                </>
+            ) : (
+                <>
+                    <Download className="mr-2 h-4 w-4" />
+                    Download Report
+                </>
+            )}
         </Button>
       </PageHeader>
-      <div id="report-content">
+      <div id="report-content" ref={reportRef}>
         <ReportCharts parts={parts} />
       </div>
     </>
