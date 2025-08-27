@@ -20,6 +20,7 @@ import {
   Info,
   Mail,
   Shield,
+  User,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -28,6 +29,7 @@ const menuItems = [
   { href: "/parts", label: "Parts", icon: Wrench },
   { href: "/labs", label: "Labs", icon: FlaskConical },
   { href: "/reports", label: "Reports", icon: BarChart },
+  { href: "/profile", label: "Profile", icon: User },
   { href: "/about", label: "About", icon: Info },
   { href: "/contact", label: "Contact", icon: Mail },
 ];
@@ -53,7 +55,7 @@ export function AppSidebar() {
             <SidebarMenuItem key={item.href}>
               <Link href={item.href} passHref>
                 <SidebarMenuButton
-                  isActive={pathname === item.href}
+                  isActive={pathname.startsWith(item.href)}
                   tooltip={item.label}
                 >
                   <item.icon />

@@ -12,14 +12,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Shield } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { toast } = useToast();
+  const [password, setPassword] = useState("");
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // For now, any input will log the user in
-    router.push("/dashboard");
+    if (password === "admin") {
+      router.push("/dashboard");
+    } else {
+      toast({
+        title: "Login Failed",
+        description: "Incorrect password. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -32,7 +43,7 @@ export default function LoginPage() {
           </div>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
-            Enter your employee number to access the dashboard
+            Enter your employee number and password to access the dashboard. The password is 'admin'.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -48,7 +59,13 @@ export default function LoginPage() {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required />
+              <Input 
+                id="password" 
+                type="password" 
+                required 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
             <Button type="submit" className="w-full">
               Login
