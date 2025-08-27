@@ -39,7 +39,7 @@ export default function ProfilePage() {
             <Separator />
             <DetailRow label="Role" value={<Badge>Administrator</Badge>} />
             <Separator />
-            <DetailRow label="Department" value="IT & Systems" />
+            <DetailRow label="Department" value="ASRF" />
             <Separator />
             <DetailRow label="Last Login" value={new Date().toLocaleString()} />
           </CardContent>
