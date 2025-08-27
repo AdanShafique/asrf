@@ -86,3 +86,61 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@media print {
+  body {
+    /* Reset background and text colors for printing */
+    background-color: #fff !important;
+    color: #000 !important;
+  }
+  /* Hide all elements by default */
+  body * {
+    visibility: hidden;
+  }
+  /* Show only the report content and its children */
+  #report-content, #report-content * {
+    visibility: visible;
+  }
+  /* Position the report content at the top of the page */
+  #report-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  /* Ensure cards and charts take up the full width */
+  .dark #report-content .recharts-surface,
+  #report-content .recharts-surface {
+      --background: 0 0% 100%;
+      --foreground: 0 0% 3.9%;
+      --card: 0 0% 100%;
+      --card-foreground: 0 0% 3.9%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 0 0% 3.9%;
+      --primary: 88 37% 30%;
+      --primary-foreground: 88 20% 98%;
+      --secondary: 45 93% 47%;
+      --secondary-foreground: 45 93% 10%;
+      --muted: 0 0% 96.1%;
+      --muted-foreground: 0 0% 45.1%;
+      --accent: 120 61% 50%;
+      --accent-foreground: 120 60% 10%;
+      --destructive: 0 84.2% 60.2%;
+      --destructive-foreground: 0 0% 98%;
+      --border: 0 0% 89.8%;
+      --input: 0 0% 89.8%;
+      --ring: 88 37% 30%;
+      --chart-1: #2ca02c;
+      --chart-2: #d62728;
+      --chart-3: #ff7f0e;
+      --chart-4: #1f77b4;
+      --chart-5: #9467bd;
+  }
+  #report-content .recharts-text, 
+  #report-content .recharts-legend-item-text,
+  #report-content .recharts-tooltip-item,
+  #report-content .recharts-tooltip-label {
+    fill: #000 !important;
+  }
+
+}

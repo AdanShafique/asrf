@@ -55,6 +55,7 @@ export default function LoginPage() {
                 type="text"
                 placeholder="E-12345"
                 required
+                maxLength={5}
               />
             </div>
             <div className="grid gap-2">
