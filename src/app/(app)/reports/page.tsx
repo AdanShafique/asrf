@@ -5,12 +5,10 @@ import { PageHeader } from "@/components/page-header";
 import { ReportCharts } from "@/components/reports/report-charts";
 import { initialParts, labs } from "@/lib/data";
 import { useLocalStorageState } from "@/hooks/use-local-storage-state";
-import type { Part } from "@/lib/types";
+import type { Part, Lab } from "@/lib/types";
 import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Download, Loader } from "lucide-react";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import { ReportPartsTable } from "@/components/reports/report-parts-table";
 
 export default function ReportsPage() {
@@ -23,35 +21,43 @@ export default function ReportsPage() {
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  const getLabName = (labId: string, labsList: Lab[]) => {
+    return labsList.find((lab) => lab.id === labId)?.name || "Unknown Lab";
+  };
   
-  const handleDownload = async () => {
-    if (!reportRef.current) return;
+  const handleDownload = () => {
+    if (!parts.length) return;
     setIsDownloading(true);
 
     try {
-        // Temporarily increase width for better capture
-        reportRef.current.style.width = '1200px';
-        
-        const canvas = await html2canvas(reportRef.current, {
-            scale: 2, 
-            useCORS: true,
-            backgroundColor: null, 
-        });
+        const headers = ["Part ID", "Name", "Lab Assigned", "Status", "Repair Time (h)", "Repaired At"];
+        const csvContent = [
+            headers.join(","),
+            ...parts.map(part => [
+                part.id,
+                `"${part.name.replace(/"/g, '""')}"`, // Handle quotes in names
+                getLabName(part.labId, labs),
+                part.status,
+                part.repairTime,
+                part.repairedAt.toLocaleDateString()
+            ].join(","))
+        ].join("\n");
 
-        // Revert width style
-        reportRef.current.style.width = '';
-
-        const pdf = new jsPDF({
-            orientation: "landscape",
-            unit: "px",
-            format: [canvas.width, canvas.height]
-        });
-
-        pdf.addImage(canvas.toDataURL("image/png", 1.0), "PNG", 0, 0, canvas.width, canvas.height);
-        pdf.save("ASRF-Report.pdf");
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        if (link.href) {
+            URL.revokeObjectURL(link.href);
+        }
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "ASRF-Parts-Report.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
 
     } catch (error) {
-        console.error("Error generating PDF:", error);
+        console.error("Error generating CSV:", error);
     } finally {
         setIsDownloading(false);
     }
@@ -77,7 +83,7 @@ export default function ReportsPage() {
             ) : (
                 <>
                     <Download className="mr-2 h-4 w-4" />
-                    Download Report
+                    Download Report (CSV)
                 </>
             )}
         </Button>
