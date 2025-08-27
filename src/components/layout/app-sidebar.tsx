@@ -1,7 +1,6 @@
-
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Sidebar,
   SidebarHeader,
@@ -21,8 +20,10 @@ import {
   Mail,
   Shield,
   User,
+  LogOut,
 } from "lucide-react";
 import Link from "next/link";
+import { Separator } from "../ui/separator";
 
 const menuItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -36,6 +37,11 @@ const menuItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    router.push("/login");
+  };
 
   return (
     <Sidebar>
@@ -66,8 +72,20 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="hidden md:flex">
-         <SidebarTrigger />
+      <SidebarFooter className="flex flex-col gap-2 p-2">
+         <Separator className="my-1" />
+         <SidebarMenu>
+            <SidebarMenuItem>
+                <SidebarMenuButton onClick={handleLogout} tooltip="Logout">
+                    <LogOut />
+                    <span>Logout</span>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+         </SidebarMenu>
+         <Separator className="my-1" />
+         <div className="hidden md:flex">
+            <SidebarTrigger />
+         </div>
       </SidebarFooter>
     </Sidebar>
   );
